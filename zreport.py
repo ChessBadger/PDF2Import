@@ -17,7 +17,7 @@ with open(input_file_path, 'r') as input_file, open(output_file_path, 'w') as ou
             # If it does, write the line to the output file
             output_file.write(line)
 
-#REMOVE LINES WITH DATES
+# REMOVE LINES WITH DATES
 with open(output_file_path, 'r') as file:
     lines = file.readlines()
 
@@ -26,7 +26,7 @@ with open(output_file_path, 'w') as file:
     for line in lines:
         # Check if the line does not contain slashes (2)
         if line.count('/') < 2 and line.count('\\') < 2:
-            file.write(line)            
+            file.write(line)
 
 # Read the file content
 with open(output_file_path, 'r', encoding='utf-8') as file:
@@ -50,14 +50,16 @@ with open('output.txt', 'r') as infile, open('area.txt', 'w') as outfile:
             if match:
                 if buffer_line:
                     outfile.write(buffer_line * non_match_count)
-                buffer_line = match.group(0) + '\n'  # Keep only the 5-digit number
+                # Keep only the 5-digit number
+                buffer_line = match.group(0) + '\n'
                 non_match_count = 0
         else:
             match = re.match(r'^(\d{5})(?!.*\d)', line.strip())
             if match:
                 if buffer_line:
                     outfile.write(buffer_line * non_match_count)
-                buffer_line = match.group(1) + '\n'  # Only keep the 5-digit number
+                # Only keep the 5-digit number
+                buffer_line = match.group(1) + '\n'
                 non_match_count = 0
             elif not re.match(r'^\d{5}', line.strip()) and not re.match(r'^\d*\.\d+', line.strip()):
                 non_match_count += 1
@@ -86,7 +88,6 @@ with open('output.txt', 'r') as infile, open('location.txt', 'w') as outfile:
         outfile.write(buffer_line * non_match_count)
 
 
-
 # #CATEGORY
 # Open the input file for reading, the output files for writing
 with open('output.txt', 'r') as input_file, open('category.txt', 'w') as category_file, open('totals.txt', 'w') as totals_file:
@@ -94,21 +95,21 @@ with open('output.txt', 'r') as input_file, open('category.txt', 'w') as categor
     for line in input_file:
         # Remove leading and trailing whitespace from the line
         line = line.strip()
-        
+
         # Split the line into words
         words = line.split()
-        
+
         # Check if the line has at least two words
         if len(words) >= 2:
             # Check if the first part is a 3-digit number
-            if words[0].isdigit() and len(words[0]) == 3 or len(words[0]) ==2:
+            if words[0].isdigit() and len(words[0]) == 3 or len(words[0]) == 2:
                 # Write the first 3 digits to the category file
                 category_file.write(words[0] + '\n')
-                
+
                 # Write the rest of the line to the totals file
                 totals_file.write(' '.join(words[1:]) + '\n')
 
-#PRIORS
+# PRIORS
 # Open the "totals" file for reading
 with open('totals.txt', 'r') as totals_file:
     # Open the "prior1", "prior2", and "prior3" files for writing
@@ -116,25 +117,25 @@ with open('totals.txt', 'r') as totals_file:
         # Iterate through each line in the "totals" file
         for line in totals_file:
             # Use regular expressions to find all numbers in the line (including commas)
-            matches = re.findall(r'\d[\d,.]*', line)
-            
+            matches = re.findall(r'\b\d+\.\d+\b', line)
+
             # Check if at least one number was found in the line
             if matches:
                 # Write the first number to "prior1.txt"
                 prior1_file.write(matches[0].replace(',', '') + '\n')
-                
+
                 # Check if at least two numbers were found in the line
                 if len(matches) >= 2:
                     # Write the second number to "prior2.txt"
                     prior2_file.write(matches[1].replace(',', '') + '\n')
-                    
+
                     # Check if at least three numbers were found in the line
                     if len(matches) >= 3:
                         # Write the third number to "prior3.txt"
                         prior3_file.write(matches[2].replace(',', '') + '\n')
 
 
-#COPY TO CSV
+# COPY TO CSV
 # Define the mappings between file names and the target starting cells
 file_to_cell_map = [
     ('area.txt', 'B16'),
